@@ -4,7 +4,9 @@ This is a simple example used to extract informations from stunnel service log l
 
 ## Grok Parsing Rules
 
-Create a **Grok Parser** and add these lines under *Define 1 or multiple parsing rules* box:
+Create a new **Processor** and select type **Grok Parser**.
+
+Add these lines under *Define 1 or multiple parsing rules* box:
 
 ```
 stunnel.service.connected_remote_server_from ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Service \[%{_service_name}\] connected remote server from %{_local_ip}\:%{_local_port}$
@@ -52,7 +54,39 @@ _service_name %{data:stunnel.service_name}
 _error_message %{regex("(No route to host|Connection refused|TIMEOUT|readsocket|writesocket|transfer|SSL|s_connect).*"):stunnel.error_message}
 ```
 
+Now you can save the new Grok Parser Processor.
+
+## Status Remapper
+
+Quoting [stunnel man page](https://www.stunnel.org/static/stunnel.html)
+
+> debug = [FACILITY.]LEVEL
+> debugging level
+> 
+> Level is one of the syslog level names or numbers emerg (0), alert (1), crit (2), err (3), warning (4), notice (5), info (6), or debug (7). All logs for the specified level and all levels numerically less than it will be shown. Use debug = debug or debug = 7 for greatest debugging output. The default is notice (5).
+
+In my stunnel configuration I'm using `debug = info` so my var `stunnel.log_status` can be an *integer* number from 0 to 6. This value can be used as a new **Processor** called **Status Remapper**.
+
+You just have to define the status attribute this way:
+
+- *Define status attribute(s)* → `stunnel.log_status`
+- *Name the processor* → `Log Status Severity remapper`
+
+and save.
+
+## Date Remapper (optional)
+
+As you can see from *Helper Rules* we are extracting each log line date with var `date`.
+
+We can use this value on a new **Processor** called **Date Remapper** this way:
+
+- *Define status attribute(s)* → `date`
+- *Name the processor* → `Log Date remapper`
+
+and, as always, save.
+
 ## Hints
+
 If you need other info or resources check out this list of links
 - [Datadog Processing](https://docs.datadoghq.com/logs/processing/)
 - [Datadog Parsing](https://docs.datadoghq.com/logs/processing/parsing/)
