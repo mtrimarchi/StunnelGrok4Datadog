@@ -87,6 +87,9 @@ and, as always, save.
 
 ## Hints
 
+On the 3rd of September, Datadog [committed](https://github.com/DataDog/documentation/blob/master/content/integrations/stunnel.md) the stunnel service integration. You can find the documentation link here:
+- [Datadog stunnel integration](https://docs.datadoghq.com/integrations/stunnel/)
+
 If you need other info or resources check out this list of links
 - [Datadog Processing](https://docs.datadoghq.com/logs/processing/)
 - [Datadog Parsing](https://docs.datadoghq.com/logs/processing/parsing/)
