@@ -34,7 +34,7 @@ _byte_sent_to_ssl %{integer:network.bytes_ssl}
 _cert_depth %{integer:stunnel.certificate.depth}
 _cert_info %{data:stunnel.certificate.info:keyvalue}
 _client_ip %{ipOrHost:network.client.ip}
-_client_port %{port:network.client.port}$
+_client_port %{port:network.client.port}
 _date_stunnel %{date("yyyy.MM.dd HH:mm:ss"):date}
 _local_ip %{ipOrHost:network.local.ip}
 _local_port %{port:network.local.port}
