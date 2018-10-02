@@ -9,27 +9,17 @@ Create a new **Processor** and select type **Grok Parser**.
 Add these lines under *Define 1 or multiple parsing rules* box:
 
 ```
-stunnel.service.connected_remote_server_from ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Service \[%{_service_name}\] connected remote server from %{_local_ip}\:%{_local_port}$
+stunnel.service.accepted_connection_from %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Service \[%{_service_name}\] accepted connection from %{_client_ip}\:%{_client_port}
 
-stunnel.service.accepted_connection_from ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Service \[%{_service_name}\] accepted connection from %{_client_ip}\:%{_client_port}$
+stunnel.s_connect %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: (s_connect|transfer)\: (connect|connected|connecting|s_poll_wait) %{_backend_ip}\:%{_backend_port}(\: %{_error_message})?
 
-stunnel.certificate.accepted ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Certificate accepted at depth\=%{_cert_depth}\: %{_cert_info}$
+stunnel.service.connected_remote_server_from %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Service \[%{_service_name}\] connected remote server from %{_local_ip}\:%{_local_port}
 
-stunnel.connection.closed ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Connection closed\: %{_byte_sent_to_ssl} byte\(s\) sent to SSL\, %{_byte_sent_to_socket} byte\(s\) sent to socket$
+stunnel.connection.closed_reset %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Connection (closed|reset)\: %{_byte_sent_to_ssl} byte\(s\) sent to SSL\, %{_byte_sent_to_socket} byte\(s\) sent to socket
 
-stunnel.connection.reset ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Connection reset\: %{_byte_sent_to_ssl} byte\(s\) sent to SSL\, %{_byte_sent_to_socket} byte\(s\) sent to socket$
+stunnel.certificate.accepted %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Certificate accepted at depth\=%{_cert_depth}\: %{_cert_info}
 
-stunnel.s_connect.connected ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: s_connect\: connected %{_backend_ip}\:%{_backend_port}$
-
-stunnel.s_connect.connecting ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: s_connect\: connecting %{_backend_ip}\:%{_backend_port}$
-
-stunnel.s_connect.no_route_to_host ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: s_connect\: connect %{_backend_ip}\:%{_backend_port}\: %{_error_message}$
-
-stunnel.s_connect.connection_refused_by_peer ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: s_connect\: connect %{_backend_ip}\:%{_backend_port}\: %{_error_message}$
-
-stunnel.s_connect.timeoutconnect_exceeded ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: s_connect\: s_poll_wait %{_backend_ip}\:%{_backend_port}\: %{_error_message}$
-
-stunnel.general.error_message ^%{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: %{_error_message}$
+stunnel.fallback %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: %{_error_message}
 ```
 
 ## Helper Rules
