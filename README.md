@@ -28,16 +28,16 @@ Open up **Advanced Settings**, on *Extract from:* declare `message` and under *H
 
 ```
 _backend_ip  %{ipOrHost:network.backend.ip}
-_backend_port %{port:network.backend.port}
+_backend_port %{regex("([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])"):network.backend.port:integer}
 _byte_sent_to_socket %{integer:network.bytes_socket}
 _byte_sent_to_ssl %{integer:network.bytes_ssl}
 _cert_depth %{integer:stunnel.certificate.depth}
 _cert_info %{data:stunnel.certificate.info:keyvalue}
 _client_ip %{ipOrHost:network.client.ip}
-_client_port %{port:network.client.port}
+_client_port %{regex("([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])"):network.client.port:integer}
 _syslog_timestamp %{date("yyyy.MM.dd HH:mm:ss"):syslog.timestamp}
 _local_ip %{ipOrHost:network.local.ip}
-_local_port %{port:network.local.port}
+_local_port %{regex("([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])"):network.local.port:integer}
 _syslog_severity %{integer:syslog.severity}
 _session_id %{data:session_id}
 _service_name %{data:stunnel.service_name}
