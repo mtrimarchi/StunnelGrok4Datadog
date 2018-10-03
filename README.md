@@ -9,17 +9,17 @@ Create a new **Processor** and select type **Grok Parser**.
 Add these lines under *Define 1 or multiple parsing rules* box:
 
 ```
-stunnel.service.accepted_connection_from %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Service \[%{_service_name}\] accepted connection from %{_client_ip}\:%{_client_port}
+stunnel.service.accepted_connection_from %{_syslog_timestamp} LOG%{_syslog_severity}\[%{_session_id}\]\: Service \[%{_service_name}\] accepted connection from %{_client_ip}\:%{_client_port}
 
-stunnel.s_connect %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: (s_connect|transfer)\: (connect|connected|connecting|s_poll_wait) %{_backend_ip}\:%{_backend_port}(\: %{_error_message})?
+stunnel.s_connect %{_syslog_timestamp} LOG%{_syslog_severity}\[%{_session_id}\]\: (s_connect|transfer)\: (connect|connected|connecting|s_poll_wait) %{_backend_ip}\:%{_backend_port}(\: %{_error_message})?
 
-stunnel.service.connected_remote_server_from %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Service \[%{_service_name}\] connected remote server from %{_local_ip}\:%{_local_port}
+stunnel.service.connected_remote_server_from %{_syslog_timestamp} LOG%{_syslog_severity}\[%{_session_id}\]\: Service \[%{_service_name}\] connected remote server from %{_local_ip}\:%{_local_port}
 
-stunnel.connection.closed_reset %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Connection (closed|reset)\: %{_byte_sent_to_ssl} byte\(s\) sent to SSL\, %{_byte_sent_to_socket} byte\(s\) sent to socket
+stunnel.connection.closed_reset %{_syslog_timestamp} LOG%{_syslog_severity}\[%{_session_id}\]\: Connection (closed|reset)\: %{_byte_sent_to_ssl} byte\(s\) sent to SSL\, %{_byte_sent_to_socket} byte\(s\) sent to socket
 
-stunnel.certificate.accepted %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: Certificate accepted at depth\=%{_cert_depth}\: %{_cert_info}
+stunnel.certificate.accepted %{_syslog_timestamp} LOG%{_syslog_severity}\[%{_session_id}\]\: Certificate accepted at depth\=%{_cert_depth}\: %{_cert_info}
 
-stunnel.fallback %{_date_stunnel} LOG%{_log_status}\[%{_session_id}\]\: %{_error_message}
+stunnel.fallback %{_syslog_timestamp} LOG%{_syslog_severity}\[%{_session_id}\]\: %{_error_message}
 ```
 
 ## Helper Rules
@@ -35,10 +35,10 @@ _cert_depth %{integer:stunnel.certificate.depth}
 _cert_info %{data:stunnel.certificate.info:keyvalue}
 _client_ip %{ipOrHost:network.client.ip}
 _client_port %{port:network.client.port}
-_date_stunnel %{date("yyyy.MM.dd HH:mm:ss"):date}
+_syslog_timestamp %{date("yyyy.MM.dd HH:mm:ss"):syslog.timestamp}
 _local_ip %{ipOrHost:network.local.ip}
 _local_port %{port:network.local.port}
-_log_status %{integer:level}
+_syslog_severity %{integer:syslog.severity}
 _session_id %{data:session_id}
 _service_name %{data:stunnel.service_name}
 _error_message %{data:error.message}
@@ -55,22 +55,22 @@ Quoting [stunnel man page](https://www.stunnel.org/static/stunnel.html)
 > 
 > Level is one of the syslog level names or numbers emerg (0), alert (1), crit (2), err (3), warning (4), notice (5), info (6), or debug (7). All logs for the specified level and all levels numerically less than it will be shown. Use debug = debug or debug = 7 for greatest debugging output. The default is notice (5).
 
-In my stunnel configuration I'm using `debug = info` so my var `level` can be an *integer* number from 0 to 6. This value can be used as a new **Processor** called **Status Remapper**.
+In my stunnel configuration I'm using `debug = info` so my var `syslog.severity` can be an *integer* number from 0 to 6. This value can be used as a new **Processor** called **Status Remapper**.
 
 You just have to define the status attribute this way:
 
-- *Define status attribute(s)* → `level`
+- *Define status attribute(s)* → `syslog.severity`
 - *Name the processor* → `Log Status Severity remapper`
 
 and save.
 
 ## Date Remapper (optional)
 
-As you can see from *Helper Rules* we are extracting each log line date with var `date`.
+As you can see from *Helper Rules* we are extracting each log line date with var `syslog.timestamp`.
 
 We can use this value on a new **Processor** called **Date Remapper** this way:
 
-- *Define status attribute(s)* → `date`
+- *Define status attribute(s)* → `syslog.timestamp`
 - *Name the processor* → `Log Date remapper`
 
 and, as always, save.
